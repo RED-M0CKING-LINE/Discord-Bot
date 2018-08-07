@@ -9,16 +9,14 @@ def read_prefixes():
     return prefix_data
 
 
-# Writes the prefix to prefixes.json
-def write_prefixes(prefix_data):
+def write_prefixes(prefix_data):  # Writes the prefix to prefixes.json
     # Write the new prefix to the file
     with open('config/prefixes.json', 'w') as prefix_list:
         json.dump(prefix_data, prefix_list, indent=4)
         prefix_list.close()
 
 
-# Find the index of the guild in prefixes.json
-def find_guild(guild, prefix_data):
+def find_guild(guild, prefix_data):  # Find the index of the guild in prefixes.json
     if guild is None:
         return -1
 
