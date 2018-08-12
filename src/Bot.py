@@ -2,30 +2,46 @@ from Secrets import BOT_TOKEN
 
 import discord
 from discord.ext import commands
+import asyncio
 import logging
 
 logger = logging.getLogger('discord')
-logger.setLevel(logging.DEBUG)
+logger.setLevel(logging.INFO)
 handler = logging.FileHandler(filename='logs/discordBot.log', encoding='utf-8', mode='w')
 handler.setFormatter(logging.Formatter('%(asctime)s : %(levelname)s: %(name)s: %(message)s'))
 logger.addHandler(handler)
 
-
-#def get_prefix(bot, message):  # Get the prefix for the bot
-    #extras = MessageProcessing.prefixes_for(message.guild, bot.prefix_data)
-    #return commands.when_mentioned_or(*extras)(bot, message)
+bot = commands.Bot(command_prefix=',')
 
 
-class Bot(commands.Bot):
+#TODO IMPLEMENT JSON USAGE FOR STORING VALUES SUCH AS WHO CAN USE SPECIFIC COMMANDS IN EACH SERVER AND CUSTOM PREFIXES
 
-    #def __init__(self):
-        #super().__init__(command_prefix=get_prefix, case_insensitive=True)
+@bot.event
+async def on_ready():
+    logger.info('THE BOT HAS STARTED')
+    print('===== BOT IS READY =====')
+    print('===== RUNNING ON: ' + str(bot.user.name) + ' =====')
+    print('===== BOT ID IS: ' + str(bot.user.id) + ' =====')
 
-    async def on_message(self, message):
-        if not message.author.bot:
-            ctx = await bot.get_context(message)
-            await self.invoke(ctx)
+
+@bot.command(pass_context=True)
+async def ping():
+    await bot.say('Pong!')
 
 
-bot = Bot(",")
+@bot.command(pass_context=True)
+async def user(ctx, usr: discord.Member):
+    await bot.say('User: {}'.format(usr.name))
+    await bot.say('User ID: {}'.format(usr.id))
+    await bot.say('User is: {}'.format(usr.status))
+    await bot.say('User\'s highest role: {}'.format(usr.top_role))
+    await bot.say('User Joined {}'.format(usr.joined_at))
+    await bot.say('Bot will shutdown by command of {}'.format(usr.name))
+
+
+@bot.command(pass_context=True)
+async def shutdown(ctx):
+    await bot.say('Bot will shutdown by command of {0.author.mention}'.format(ctx.message))
+
+
 bot.run(BOT_TOKEN.BOT_TOKEN)
